@@ -13,26 +13,10 @@ export default function Navbar() {
     >
       <div className="flex items-center">
         <Link href="/" className="flex items-center gap-2">
-          {/* Brand Logo */}
-          <div className="w-8 h-8 flex flex-col justify-between pt-[2px]">
-            <svg viewBox="0 0 14 21" fill="none" className="w-6 h-6">
-               <path d="M0 0H14V7H7L0 0Z" fill="white"/>
-               <path d="M0 7H14V14H7L0 21V7Z" fill="white"/>
-            </svg>
-          </div>
-          <span className="text-white font-bold tracking-tight text-lg ml-1 hidden sm:block">Builder</span>
+          <span className="text-white font-bold tracking-tight text-lg ml-1 hidden sm:block">Ai Website Builder</span>
         </Link>
       </div>
       
-      <div className="hidden md:flex items-center gap-6 text-[15px] text-[#A1A1AA]">
-        <Link href="#product" className="hover:text-white transition-colors">Product</Link>
-        <Link href="#teams" className="hover:text-white transition-colors">Teams</Link>
-        <Link href="#resources" className="hover:text-white transition-colors">Resources</Link>
-        <Link href="#community" className="hover:text-white transition-colors">Community</Link>
-        <Link href="#support" className="hover:text-white transition-colors">Support</Link>
-        <Link href="#enterprise" className="hover:text-white transition-colors">Enterprise</Link>
-        <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
-      </div>
 
       <div className="flex items-center gap-6">
         <Link 

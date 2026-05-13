@@ -46,7 +46,7 @@ export const generateHTML = (project) => {
       }
       section:last-of-type { border-bottom: none; }
       
-      h1, h2, h3 { font-family: var(--font-heading); line-height: 1.1; letter-spacing: -0.03em; }
+      h1, h2, h3 { font-family: var(--font-heading); line-height: 1.1; letter-spacing: -0.03em; word-wrap: break-word; overflow-wrap: break-word; }
       h1 { font-size: clamp(3.5rem, 10vw, 6.5rem); font-weight: 900; }
       h2 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; text-align: center; margin-bottom: 5rem; }
       h3 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; }
@@ -101,24 +101,53 @@ export const generateHTML = (project) => {
       /* Sticky Navbar */
       nav { 
         position: sticky; top: 0; z-index: 1000; 
-        background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); 
-        border-bottom: 1px solid var(--border, rgba(0,0,0,0.05)); padding: 1.5rem 0; 
+        background: rgba(255,255,255,0.96); backdrop-filter: blur(18px); 
+        border-bottom: 1px solid var(--border, rgba(0,0,0,0.06)); 
+        box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+        padding: 1rem 0; 
       }
-      .nav-container { display: flex; justify-content: space-between; align-items: center; }
-      .brand { font-weight: 900; font-size: 1.75rem; color: var(--primary); text-decoration: none; white-space: nowrap; letter-spacing: -0.04em; }
-      .nav-links { display: flex; gap: 3.5rem; align-items: center; }
+      .nav-container { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; }
+      .brand { display: inline-flex; align-items: center; gap: 0.85rem; font-weight: 900; font-size: 1.45rem; color: var(--primary); text-decoration: none; white-space: nowrap; letter-spacing: -0.05em; }
+      .brand-mark {
+        width: 2.25rem; height: 2.25rem; border-radius: 0.85rem; background: var(--primary);
+        display: inline-flex; align-items: center; justify-content: center; color: white;
+        font-size: 1rem; box-shadow: 0 10px 24px -12px var(--primary);
+      }
+      .nav-links { display: flex; gap: 1.75rem; align-items: center; flex-wrap: wrap; justify-content: center; }
       .nav-link { 
         text-decoration: none; color: var(--text-primary); 
-        font-weight: 700; font-size: 0.9rem; text-transform: uppercase; 
-        letter-spacing: 0.08em; opacity: 0.6; transition: 0.3s; 
+        font-weight: 700; font-size: 0.82rem; text-transform: uppercase; 
+        letter-spacing: 0.12em; opacity: 0.7; transition: 0.3s; 
+        padding: 0.35rem 0.1rem;
       }
-      .nav-link:hover { opacity: 1; color: var(--primary); }
+      .nav-link:hover { opacity: 1; color: var(--primary); transform: translateY(-1px); }
+      .nav-cta {
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 0.85rem 1.4rem; background: var(--primary); color: white;
+        text-decoration: none; border-radius: 999px; font-weight: 800;
+        font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+        box-shadow: 0 12px 28px -14px var(--primary);
+        transition: 0.3s ease;
+      }
+      .nav-cta:hover { transform: translateY(-2px); filter: brightness(1.05); }
       .faq-container { display: grid; gap: 1rem; }
 
       @media (max-width: 1024px) { 
         .flex, .flex-reverse { flex-direction: column !important; text-align: center; gap: 4rem; }
         section { padding: 6rem 0; }
-        .nav-links { display: none; }
+        .nav-container { flex-direction: column; gap: 1rem; text-align: center; justify-content: center; padding: 1.5rem; }
+        .nav-links { display: none !important; }
+        .nav-cta { display: none !important; }
+        .brand { justify-content: center; width: 100%; font-size: 1.3rem; }
+      }
+
+      @media (max-width: 640px) {
+        h1 { font-size: clamp(2.5rem, 12vw, 4rem); }
+        h2 { font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 2.5rem; }
+        section { padding: 4.5rem 0; }
+        .container { padding: 0 1.5rem; }
+        nav { padding: 1rem 0; }
+        .brand { font-size: 1.15rem; }
       }
     `;
 
@@ -133,11 +162,22 @@ export const generateHTML = (project) => {
 
     const renderText = (val) => {
       if (!val) return '';
-      const paragraphs = Array.isArray(val) ? val : String(val).split('\n\n');
-      return paragraphs
-        .filter(p => p !== null && p !== undefined)
-        .map(p => `<p style="margin-bottom: 1.5rem;">${escapeHtml(String(p)).replace(/\n/g, '<br>')}</p>`)
-        .join('');
+      const content = Array.isArray(val) ? val.join('\n\n') : String(val);
+
+      // Split into paragraphs/blocks
+      const blocks = content.split('\n\n').filter(b => b.trim());
+
+      return blocks.map(block => {
+        // Handle lists
+        if (block.trim().startsWith('- ') || block.trim().startsWith('* ')) {
+          const items = block.split('\n').filter(li => li.trim());
+          const listItems = items.map(item => `<li>${escapeHtml(item.replace(/^[-*]\s+/, ''))}</li>`).join('');
+          return `<ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; list-style-type: disc;">${listItems}</ul>`;
+        }
+
+        // Handle plain paragraphs
+        return `<p style="margin-bottom: 1.5rem;">${escapeHtml(block).replace(/\n/g, '<br>')}</p>`;
+      }).join('');
     };
 
     const findList = (type, variant, props) => {
@@ -156,10 +196,10 @@ export const generateHTML = (project) => {
     const renderSection = (section) => {
       if (!section || section.visible === false) return '';
       const { type, variant = '' } = section;
-      const props = section.props || section; 
+      const props = section.props || section;
       const image = resolveImage(projectImages?.[type]) || resolveImage(props.image) || resolveImage(props.imageUrl) || '';
       const sectionId = section.id || `${type}-${section.order ?? 1}`;
-      
+
       const headline = getVal(props, ['headline', 'title', 'question']);
       const subheadline = getVal(props, ['subheadline', 'description', 'subtitle', 'label']);
       const content = getVal(props, ['content', 'text', 'answer', 'body']);
@@ -179,17 +219,17 @@ export const generateHTML = (project) => {
         listHTML = `
           <div class="${isLogos ? 'logo-strip' : isSteps ? 'steps-grid' : isFaq ? 'faq-container' : 'grid'}">
             ${list.map(item => {
-              const itemTitle = typeof item === 'string' ? item : (item.title || item.question || item.name || item.label || item.author || '');
-              const itemText = typeof item === 'string' ? '' : (item.description || item.answer || item.quote || item.text || item.body || '');
-              
-              return `
+          const itemTitle = typeof item === 'string' ? item : (item.title || item.question || item.name || item.label || item.author || '');
+          const itemText = typeof item === 'string' ? '' : (item.description || item.answer || item.quote || item.text || item.body || '');
+
+          return `
                 <div class="${isFaq ? 'faq-item' : isLogos ? 'logo-item' : isReviews ? 'card testimonial-card' : 'card'} ${isSteps ? 'step-item' : ''}" 
                      ${isFaq ? 'onclick="this.classList.toggle(\'active\')"' : ''}>
                   ${isFaq ? '<div class="faq-header"><span>' + escapeHtml(itemTitle) + '</span><span>↓</span></div>' : '<h3>' + escapeHtml(itemTitle) + '</h3>'}
                   ${itemText ? `<div class="${isFaq ? 'faq-answer' : ''}" style="margin-top: 1rem;">${renderText(itemText)}</div>` : ''}
                 </div>
               `;
-            }).join('')}
+        }).join('')}
           </div>
         `;
       }
@@ -236,8 +276,14 @@ export const generateHTML = (project) => {
       return typeLabels[s.type] || s.type.charAt(0).toUpperCase() + s.type.slice(1);
     };
 
+    const seenNavTypes = new Set();
     const navLinks = (sections || [])
-      .filter(s => s.visible !== false && s.type !== 'hero' && s.type !== 'footer' && s.type !== 'cta')
+      .filter(s => {
+        if (s.visible === false || s.type === 'hero' || s.type === 'footer' || s.type === 'cta') return false;
+        if (seenNavTypes.has(s.type)) return false;
+        seenNavTypes.add(s.type);
+        return true;
+      })
       .map(s => `<a href="#${escapeAttr(s.id || `${s.type}-${s.order ?? 1}`)}" class="nav-link">${escapeHtml(getNavLinkLabel(s))}</a>`)
       .join('');
 
@@ -254,11 +300,11 @@ export const generateHTML = (project) => {
 <body>
   <nav>
     <div class="container nav-container">
-      <a href="#" class="brand">${escapeHtml(businessInfo?.businessName || project?.name || 'Brand')}</a>
+      <a href="#" class="brand"><span class="brand-mark">◆</span><span>${escapeHtml(businessInfo?.businessName || project?.name || 'Brand')}</span></a>
       <div class="nav-links">
         ${navLinks}
-        <a href="#contact" class="btn" style="padding: 0.75rem 1.75rem; font-size: 0.8rem; border-radius: 50px;">Connect Now</a>
       </div>
+      <a href="#contact" class="nav-cta">Connect Now</a>
     </div>
   </nav>
   <main>${sortedSections.map(renderSection).join('')}</main>

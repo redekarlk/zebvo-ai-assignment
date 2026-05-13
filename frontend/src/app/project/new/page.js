@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import CreateProjectForm from '@/components/dashboard/CreateProjectForm';
-import ProjectSetupChat from '@/components/dashboard/ProjectSetupChat';
 import { useProjectStore } from '@/store/projectStore';
 import aiService from '@/services/ai.service';
 
@@ -15,37 +14,20 @@ const NewProjectPage = () => {
   const createProject = useProjectStore((state) => state.createProject);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [globalError, setGlobalError] = useState(null);
-  
-  const [step, setStep] = useState(1);
-  const [createdProject, setCreatedProject] = useState(null);
 
   const handleCreateProject = async (formData) => {
     setIsSubmitting(true);
     setGlobalError(null);
+    const userInstructions = formData.userInstructions || '';
 
     try {
       const newProject = await createProject(formData);
-      setCreatedProject(newProject);
-      setStep(2);
-    } catch (err) {
-      console.error('Project creation failed:', err);
-      setGlobalError(err.response?.data?.message || err.message || 'An unexpected error occurred during project creation.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleGenerateWebsite = async (userInstructions = '') => {
-    if (!createdProject) return;
-    
-    setIsSubmitting(true);
-    try {
-      const projectId = createdProject._id || createdProject.id;
+      const projectId = newProject._id || newProject.id;
       await aiService.generateWebsite(projectId, userInstructions);
       router.push(`/project/${projectId}`);
     } catch (err) {
-      console.error('Website generation failed:', err);
-      setGlobalError(err.response?.data?.message || err.message || 'An unexpected error occurred during website generation.');
+      console.error('Project generation failed:', err);
+      setGlobalError(err.response?.data?.message || err.message || 'An unexpected error occurred during project creation.');
       setIsSubmitting(false);
     }
   };
@@ -65,20 +47,8 @@ const NewProjectPage = () => {
 
           <div className="mb-10 flex items-center justify-between">
             <div>
-              <h1 className="text-[32px] font-bold text-white tracking-tight mb-2">
-                {step === 1 ? 'Create New Project' : 'Tailor your Website'}
-              </h1>
-              <p className="text-[15px] text-[#888]">
-                {step === 1 
-                  ? 'Tell us about the business to get started.' 
-                  : 'Refine your design and content with BuilderAI before we generate your site.'}
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${step >= 1 ? 'bg-[#0099FF]' : 'bg-[#222]'}`}></div>
-              <div className="w-4 h-[1px] bg-[#222]"></div>
-              <div className={`w-2 h-2 rounded-full ${step >= 2 ? 'bg-[#0099FF]' : 'bg-[#222]'}`}></div>
+              <h1 className="text-[32px] font-bold text-white tracking-tight mb-2">Create New Project</h1>
+              <p className="text-[15px] text-[#888]">Tell us about the business to get started.</p>
             </div>
           </div>
 
@@ -94,22 +64,14 @@ const NewProjectPage = () => {
             </div>
           )}
 
-          {step === 1 ? (
-            <CreateProjectForm onSubmit={handleCreateProject} isSubmitting={isSubmitting} />
-          ) : (
-            <ProjectSetupChat 
-              projectId={createdProject?._id || createdProject?.id} 
-              businessInfo={createdProject?.businessInfo} 
-              onGenerate={handleGenerateWebsite} 
-            />
-          )}
-          
+          <CreateProjectForm onSubmit={handleCreateProject} isSubmitting={isSubmitting} />
+
           {/* Loading Overlay */}
-          {isSubmitting && step === 2 && (
+          {isSubmitting && (
             <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#000000]/80 backdrop-blur-sm">
               <div className="w-12 h-12 border-4 border-[#333] border-t-[#0099FF] rounded-full animate-spin mb-6"></div>
               <h2 className="text-xl font-bold text-white mb-2">Generating Website...</h2>
-              <p className="text-[#888] font-medium text-[13px]">Our AI is designing your perfect site based on your instructions.</p>
+              <p className="text-[#888] font-medium text-[13px]">Our AI is designing your perfect site from the project details you entered.</p>
             </div>
           )}
         </div>

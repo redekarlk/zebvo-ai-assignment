@@ -372,21 +372,31 @@ const main = async () => {
   await connectDB();
 
   try {
-    // Clear existing templates
-    await Template.deleteMany({});
-    console.log('Cleared existing templates');
+    let createdCount = 0;
+    let updatedCount = 0;
 
-    // Insert new templates
-    const inserted = await Template.insertMany(normalizedTemplates);
-    console.log(`✓ Seeded ${inserted.length} templates`);
+    for (const template of normalizedTemplates) {
+      const result = await Template.updateOne(
+        { slug: template.slug },
+        { $set: template },
+        { upsert: true }
+      );
 
-    inserted.forEach(t => {
-      console.log(`  - ${t.name} (${t.slug})`);
-    });
+      if (result.upsertedCount > 0) {
+        createdCount += 1;
+        continue;
+      }
+
+      if (result.modifiedCount > 0) {
+        updatedCount += 1;
+      }
+    }
+
+    console.log(`✓ Seeded templates: ${createdCount} created, ${updatedCount} updated`);
   } catch (error) {
     console.error('Seed error:', error.message);
   } finally {
-    mongoose.disconnect();
+    await mongoose.disconnect();
   }
 };
 

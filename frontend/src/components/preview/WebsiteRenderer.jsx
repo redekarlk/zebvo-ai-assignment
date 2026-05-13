@@ -13,6 +13,7 @@ const WebsiteRenderer = ({ project }) => {
   const pendingSectionRef = useRef(null);
   const lockRafRef = useRef(null);
   const selectedSection = useEditorStore((state) => state.selectedSection);
+  const previewMode = useEditorStore((state) => state.previewMode || 'desktop');
   const [isSectionEditing, setIsSectionEditing] = useState(false);
 
   const injectScrollBootstrap = (rawHtml, y) => {
@@ -289,14 +290,32 @@ const WebsiteRenderer = ({ project }) => {
   }
 
   return (
-    <iframe
-      ref={iframeRef}
-      title="Website Preview"
-      srcDoc={html}
-      onLoad={handleIframeLoad}
-      className="w-full min-h-screen bg-white"
-      style={{ border: 0, opacity: isFrameReady ? 1 : 0 }}
-    />
+    <div 
+      className="w-full h-full relative"
+      style={{ 
+        overflow: previewMode === 'desktop' ? 'visible' : 'hidden',
+        minHeight: '100%'
+      }}
+    >
+      <iframe
+        ref={iframeRef}
+        title="Website Preview"
+        srcDoc={html}
+        onLoad={handleIframeLoad}
+        className="bg-white transition-all duration-500 ease-in-out shadow-2xl"
+        style={{ 
+          border: 0, 
+          opacity: isFrameReady ? 1 : 0,
+          width: previewMode === 'desktop' ? '142.85%' : '100%',
+          height: previewMode === 'desktop' ? '142.85%' : '100%',
+          minHeight: previewMode === 'desktop' ? '142.85vh' : '100vh',
+          transform: previewMode === 'desktop' ? 'scale(0.7)' : 'scale(1)',
+          transformOrigin: 'top center',
+          marginLeft: previewMode === 'desktop' ? '-21.425%' : '0',
+          borderRadius: previewMode === 'mobile' ? '12px' : '0',
+        }}
+      />
+    </div>
   );
 };
 

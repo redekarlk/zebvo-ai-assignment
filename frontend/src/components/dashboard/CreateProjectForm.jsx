@@ -10,6 +10,7 @@ const CreateProjectForm = ({ onSubmit, isSubmitting }) => {
     category: '',
     services: '',
     targetAudience: '',
+    projectPrompt: '',
     tone: 'professional',
     stylePreference: 'modern',
     fontFamily: 'Inter',
@@ -71,6 +72,7 @@ const CreateProjectForm = ({ onSubmit, isSubmitting }) => {
             address: formData.address
           }
         },
+        userInstructions: formData.projectPrompt,
         templateId: selectedTemplateId // Include selected template
       };
       
@@ -80,22 +82,30 @@ const CreateProjectForm = ({ onSubmit, isSubmitting }) => {
 
   if (showTemplates) {
     return (
-      <div className="bg-[#111111] rounded-sm border border-[#222] p-8">
-        <div className="mb-8 border-b border-[#222] pb-6">
-          <h2 className="text-lg font-bold text-white mb-2">Choose Your Template</h2>
-          <p className="text-[#888] text-[13px]">Start with a pre-designed template and customize it with your business information.</p>
+      <div className="relative overflow-hidden rounded-sm border border-white/10 bg-[#111111] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.35)] md:p-8">
+
+        <div className="relative mb-8 border-b border-white/10 pb-6">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#9fd3ff]">
+            Template Gallery
+          </div>
+          <h2 className="text-2xl font-semibold tracking-tight text-white md:text-3xl">Choose Your Template</h2>
+          <p className="mt-3 max-w-2xl text-[13px] leading-6 text-[#9a9a9a] md:text-sm">
+            Start with a pre-designed template and customize it with your business information.
+          </p>
         </div>
 
-        <TemplateGallery
-          onSelectTemplate={handleSelectTemplate}
-          selectedTemplateId={selectedTemplateId}
-        />
+        <div className="relative">
+          <TemplateGallery
+            onSelectTemplate={handleSelectTemplate}
+            selectedTemplateId={selectedTemplateId}
+          />
+        </div>
 
-        <div className="mt-8 pt-6 border-t border-[#222] flex items-center justify-between">
+        <div className="relative mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <button
             type="button"
             onClick={() => setShowTemplates(false)}
-            className="text-[#0099FF] hover:text-[#0088EE] font-bold text-[13px] transition-colors"
+            className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[13px] font-semibold text-[#cfe8ff] transition-all hover:border-[#0099FF]/40 hover:bg-[#0099FF]/10 hover:text-white"
           >
             Skip & Start with Blank
           </button>
@@ -103,7 +113,7 @@ const CreateProjectForm = ({ onSubmit, isSubmitting }) => {
             type="button"
             disabled={!selectedTemplateId}
             onClick={handleProceedToForm}
-            className="px-6 py-2.5 bg-[#0099FF] hover:bg-[#0088EE] text-white font-bold rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-[13px]"
+            className="inline-flex items-center justify-center rounded-sm bg-[#0099FF] px-5 py-2.5 text-[13px] font-semibold text-white shadow-lg shadow-[#0099FF]/25 transition-all hover:-translate-y-px hover:bg-[#0088ee] hover:shadow-[#0099FF]/35 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Continue with Selected Template
           </button>
@@ -198,6 +208,18 @@ const CreateProjectForm = ({ onSubmit, isSubmitting }) => {
         </div>
 
         <div>
+          <label className={labelClasses}>Project Prompt</label>
+          <textarea
+            name="projectPrompt"
+            value={formData.projectPrompt}
+            onChange={handleChange}
+            placeholder="Tell us what you want the site to emphasize, the style you want, and any sections or content to include."
+            rows={4}
+            className={`${inputClasses} resize-none`}
+          />
+        </div>
+
+        <div>
           <label className={labelClasses}>Brand Tone</label>
           <div className="relative">
             <select
@@ -284,23 +306,6 @@ const CreateProjectForm = ({ onSubmit, isSubmitting }) => {
           </div>
         </div>
 
-        <div className="pt-6 mt-6 border-t border-[#222]">
-          <h3 className="text-sm font-bold text-white mb-4">Contact Information (Optional)</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className={labelClasses}>Phone Number</label>
-              <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="(555) 123-4567" className={inputClasses} />
-            </div>
-            <div>
-              <label className={labelClasses}>Email Address</label>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="hello@example.com" className={inputClasses} />
-            </div>
-            <div className="md:col-span-2">
-              <label className={labelClasses}>Physical Address</label>
-              <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="123 Main St, City, State" className={inputClasses} />
-            </div>
-          </div>
-        </div>
       </div>
 
       <div className="mt-8 pt-6 border-t border-[#222] flex items-center justify-end">

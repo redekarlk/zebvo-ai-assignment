@@ -68,20 +68,33 @@ export default function TemplateGallery({ onSelectTemplate, selectedTemplateId }
   }
 
   return (
-    <div>
-      {/* Category Filter */}
-      <div className="mb-6">
-        <h3 className="text-sm font-semibold text-gray-700 mb-3">Filter by Category</h3>
+    <div className="space-y-6">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-[#8b8b8b]">Filter by Category</h3>
+          <p className="mt-1 text-[13px] text-[#9a9a9a]">
+            Browse {filteredTemplates.length} of {templates.length} templates.
+          </p>
+        </div>
+        {selectedTemplateId && (
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-300">
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            Template selected
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-sm border border-white/10 bg-white/5 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
         <div className="flex flex-wrap gap-2">
           {categories.map(cat => (
             <button
               key={cat.value}
               onClick={() => setFilteredCategory(cat.value)}
               className={`
-                px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                rounded-sm px-4 py-2 text-sm font-medium transition-all duration-200
                 ${filteredCategory === cat.value
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-white text-[#0d0d0d] shadow-md shadow-black/25 ring-1 ring-white/40'
+                  : 'bg-white/5 text-[#c7c7c7] ring-1 ring-white/8 hover:bg-white/10 hover:text-white'
                 }
               `}
             >
@@ -91,8 +104,7 @@ export default function TemplateGallery({ onSelectTemplate, selectedTemplateId }
         </div>
       </div>
 
-      {/* Templates Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {filteredTemplates.map(template => (
           <TemplateCard
             key={template._id}
@@ -104,8 +116,8 @@ export default function TemplateGallery({ onSelectTemplate, selectedTemplateId }
       </div>
 
       {filteredTemplates.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-gray-500">No templates found in this category</p>
+        <div className="rounded-sm border border-dashed border-white/10 bg-[#141415] py-10 text-center">
+          <p className="text-sm text-[#9a9a9a]">No templates found in this category</p>
         </div>
       )}
     </div>
