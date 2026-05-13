@@ -23,18 +23,31 @@ export const generateHTML = (project) => {
       return `--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}: ${value};`;
     }).join('\n');
 
+    const headingFont = theme?.typography?.headingFontFamily || 'serif';
+    const bodyFont = theme?.typography?.fontFamily || 'sans-serif';
+    const fontFamilies = new Set([headingFont, bodyFont, 'Inter']);
+    const googleFontsUrl = `https://fonts.googleapis.com/css2?${Array.from(fontFamilies).filter(f => !['serif', 'sans-serif', 'monospace'].includes(f.toLowerCase())).map(f => `family=${f.replace(/\s+/g, '+')}:wght@400;600;700;800;900`).join('&')}&display=swap`;
+
+    console.log('[htmlGenerator] Theme Parsing:', {
+      headingFont,
+      bodyFont,
+      baseScale: theme?.typography?.baseScale || '100%',
+      googleFontsUrl
+    });
+
     const styles = `
       :root {
         ${colorVars}
         --radius: ${theme?.layout?.radius || '12px'};
-        --font-heading: "${theme?.typography?.headingFontFamily || 'serif'}";
-        --font-body: "${theme?.typography?.fontFamily || 'sans-serif'}";
+        --font-heading: "${headingFont}";
+        --font-body: "${bodyFont}";
+        --font-scale: ${theme?.typography?.baseScale || '100%'};
       }
       
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@800;900&display=swap');
+      @import url('${googleFontsUrl}');
 
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      html { scroll-behavior: smooth; }
+      html { scroll-behavior: smooth; font-size: var(--font-scale); }
       body { font-family: var(--font-body); background: var(--background); color: var(--text-primary); line-height: 1.7; -webkit-font-smoothing: antialiased; }
       
       .container { max-width: 1240px; margin: 0 auto; padding: 0 2.5rem; }
@@ -76,8 +89,9 @@ export const generateHTML = (project) => {
       .flex-reverse { flex-direction: row-reverse; }
 
       /* Specialized Lists */
-      .logo-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 5rem; opacity: 0.5; filter: grayscale(1); padding: 2rem 0; }
-      .logo-item { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.05em; }
+      .logo-strip { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4rem; opacity: 0.6; filter: grayscale(1); padding: 3rem 0; }
+      .logo-item { display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+      .logo-img { height: 2.5rem; width: auto; object-fit: contain; }
 
       .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 5rem; counter-reset: step; }
       .step-item { position: relative; }
@@ -218,14 +232,26 @@ export const generateHTML = (project) => {
 
         listHTML = `
           <div class="${isLogos ? 'logo-strip' : isSteps ? 'steps-grid' : isFaq ? 'faq-container' : 'grid'}">
-            ${list.map(item => {
+            ${list.map((item, idx) => {
           const itemTitle = typeof item === 'string' ? item : (item.title || item.question || item.name || item.label || item.author || '');
           const itemText = typeof item === 'string' ? '' : (item.description || item.answer || item.quote || item.text || item.body || '');
+          const itemRole = item.role || '';
+          const itemImg = resolveImage(item.image || item.imageUrl || (type === 'services' ? projectImages?.services?.[idx] : null));
+
+          if (isLogos) {
+            return `
+              <div class="logo-item">
+                ${itemImg ? `<img src="${escapeAttr(itemImg)}" alt="${escapeAttr(itemTitle)}" class="logo-img">` : ''}
+                <span>${escapeHtml(itemTitle)}</span>
+              </div>
+            `;
+          }
 
           return `
-                <div class="${isFaq ? 'faq-item' : isLogos ? 'logo-item' : isReviews ? 'card testimonial-card' : 'card'} ${isSteps ? 'step-item' : ''}" 
+                <div class="${isFaq ? 'faq-item' : isReviews ? 'card testimonial-card' : 'card'} ${isSteps ? 'step-item' : ''}" 
                      ${isFaq ? 'onclick="this.classList.toggle(\'active\')"' : ''}>
                   ${isFaq ? '<div class="faq-header"><span>' + escapeHtml(itemTitle) + '</span><span>↓</span></div>' : '<h3>' + escapeHtml(itemTitle) + '</h3>'}
+                  ${itemRole && isReviews ? `<p style="font-size: 0.85rem; opacity: 0.6; margin-bottom: 1rem; font-weight: 700; text-transform: uppercase;">${escapeHtml(itemRole)}</p>` : ''}
                   ${itemText ? `<div class="${isFaq ? 'faq-answer' : ''}" style="margin-top: 1rem;">${renderText(itemText)}</div>` : ''}
                 </div>
               `;
@@ -235,12 +261,31 @@ export const generateHTML = (project) => {
       }
 
       if (type === 'hero') {
-        const bgStyle = image ? `background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${escapeAttr(image)}'); background-size: cover; background-position: center;` : `background: var(--primary);`;
+        const isSplit = variant.includes('split') || variant.includes('left') || variant.includes('right');
+        const bgStyle = !isSplit && image ? `background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${escapeAttr(image)}'); background-size: cover; background-position: center;` : `background: var(--background);`;
+        
+        if (isSplit) {
+          return `
+            <section id="${escapeAttr(sectionId)}" class="hero" style="min-height: 85vh; display: flex; align-items: center; border-bottom: none;">
+              <div class="container flex ${variant.includes('right') ? 'flex-reverse' : ''}">
+                <div style="flex: 1.2;">
+                  <h1 data-field="headline" style="margin-bottom: 2.5rem;">${escapeHtml(headline || '')}</h1>
+                  ${subheadline ? `<p data-field="subheadline" style="font-size: 1.4rem; margin-bottom: 4rem; opacity: 0.8;">${escapeHtml(subheadline)}</p>` : ''}
+                  ${cta ? `<a data-field="cta" href="#${escapeAttr(sectionId)}" class="btn">${escapeHtml(cta)}</a>` : ''}
+                </div>
+                <div style="flex: 1;">
+                  ${image ? `<img src="${escapeAttr(image)}" alt="Hero" style="width: 100%; border-radius: var(--radius); box-shadow: 0 40px 80px rgba(0,0,0,0.15);">` : ''}
+                </div>
+              </div>
+            </section>
+          `;
+        }
+
         return `
-          <section id="${escapeAttr(sectionId)}" class="hero" style="${bgStyle} min-height: 90vh; display: flex; align-items: center; color: white;">
+          <section id="${escapeAttr(sectionId)}" class="hero" style="${bgStyle} min-height: 90vh; display: flex; align-items: center; color: ${image ? 'white' : 'var(--text-primary)'};">
             <div class="container" style="text-align: center;">
-                  <h1 data-field="headline" style="color: white; margin-bottom: 3rem;">${escapeHtml(headline || '')}</h1>
-                  ${subheadline ? `<p data-field="subheadline" style="font-size: 1.5rem; max-width: 900px; margin: 0 auto 5rem; opacity: 0.9; color: white;">${escapeHtml(subheadline)}</p>` : ''}
+                  <h1 data-field="headline" style="color: ${image ? 'white' : 'inherit'}; margin-bottom: 3rem;">${escapeHtml(headline || '')}</h1>
+                  ${subheadline ? `<p data-field="subheadline" style="font-size: 1.5rem; max-width: 900px; margin: 0 auto 5rem; opacity: 0.9; color: ${image ? 'white' : 'inherit'};">${escapeHtml(subheadline)}</p>` : ''}
                   ${cta ? `<a data-field="cta" href="#${escapeAttr(sectionId)}" class="btn">${escapeHtml(cta)}</a>` : ''}
                 </div>
           </section>

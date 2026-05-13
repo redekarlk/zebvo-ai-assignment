@@ -2,6 +2,7 @@ import axios from 'axios';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { JWT } from 'google-auth-library';
 import vertexAI from '../config/gemini.js';
+import { uploadImage } from './cloudinary.service.js';
 
 const GOOGLE_CLOUD_PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT_ID;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
@@ -186,6 +187,18 @@ export const generateSingleImage = async (promptBuilder, ...args) => {
       imageUrl = createFallbackImageDataUrl(prompt, imageType, keywords);
     } else {
       console.log(`[Image Service] ✓ ${imageType} image generated successfully`);
+    }
+
+    // Upload to Cloudinary to save DB space
+    try {
+      console.log(`[Image Service] Uploading ${imageType} to Cloudinary...`);
+      const uploadResult = await uploadImage(imageUrl, `projects/${imageType}`);
+      if (uploadResult?.url) {
+        imageUrl = uploadResult.url;
+        console.log(`[Image Service] ✓ ${imageType} uploaded to Cloudinary: ${imageUrl}`);
+      }
+    } catch (uploadError) {
+      console.warn(`[Image Service] Cloudinary upload failed, falling back to data URL:`, uploadError.message);
     }
     
     return {

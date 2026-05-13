@@ -305,9 +305,22 @@ export const generateWebsiteContentWithTheme = async (businessInfo, theme) => {
     const rawText = await callAIModel(prompt);
     const result = parseGeminiJson(rawText);
 
-    // Basic structure check
-    if (!result.sections || !Array.isArray(result.sections)) {
-      throw new Error('Invalid content response: missing sections array');
+    // Ensure SEO keywords are populated
+    if (!result.seo) result.seo = {};
+    if (!Array.isArray(result.seo.keywords) || result.seo.keywords.length === 0) {
+      const businessName = businessInfo?.businessName || 'Business';
+      const category = businessInfo?.category || 'Services';
+      const services = Array.isArray(businessInfo?.services) ? businessInfo.services : [];
+      
+      result.seo.keywords = [
+        businessName.toLowerCase(),
+        category.toLowerCase(),
+        ...services.map(s => String(s).toLowerCase()),
+        'quality', 'professional', 'expert'
+      ].filter((v, i, a) => v && a.indexOf(v) === i).slice(0, 10);
+      
+      if (!result.seo.title) result.seo.title = `${businessName} | ${category}`;
+      if (!result.seo.description) result.seo.description = `${businessName} offers premium ${category} services tailored for your needs.`;
     }
 
     return result;

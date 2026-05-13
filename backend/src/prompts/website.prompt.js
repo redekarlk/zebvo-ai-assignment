@@ -46,6 +46,7 @@ Data Mapping Rules:
 - "headline" is mandatory for every section.
 - "ctaText" is required for Hero, CTA, and optionally About.
 - Images: Generate descriptive "url_ref" (15 words) for Hero, About, and Features.
+- SEO: Include an "seo" object with "title", "description", and an array of 8-10 "keywords" (highly relevant, conversion-focused).
 
 Output ONLY a valid JSON object. Do not explain anything. Return ONLY the JSON.`;
 };
