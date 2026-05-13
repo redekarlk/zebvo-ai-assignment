@@ -313,7 +313,7 @@ export const generateWebsiteContentWithTheme = async (businessInfo, theme) => {
     return result;
   } catch (error) {
     console.error(`[AI Service] Content generation error:`, error.message);
-    return createFallbackWebsiteContent(businessInfo);
+    return buildFallbackWebsiteContent(businessInfo);
   }
 };
 
