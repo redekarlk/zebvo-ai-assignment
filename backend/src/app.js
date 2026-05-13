@@ -12,9 +12,22 @@ import errorMiddleware from './middleware/error.middleware.js';
 
 const app = express();
 
+const allowedOrigins = [
+  'https://zebvo-ai-assignment.vercel.app',
+  'http://localhost:3000',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, origin);
+        return;
+      }
+
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   })
 );
