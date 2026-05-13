@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI CRM for SMEs: Smart Solutions for Business Growth | AI CRM</title>
+  <style>
+      :root {
+        --primary: #1C4E80;
+--secondary: #4A6D7C;
+--background: #F8F9FA;
+--surface: #EFF2F5;
+--text-primary: #0f172a;
+--text-secondary: #475569;
+--border: #e2e8f0;
+--accent: #00BFFF;
+        --radius: 8px;
+        --font-heading: "Montserrat";
+        --font-body: "Open Sans";
+      }
+      
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@800;900&display=swap');
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body { font-family: var(--font-body); background: var(--background); color: var(--text-primary); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+      
+      .container { max-width: 1240px; margin: 0 auto; padding: 0 2.5rem; }
+      section { 
+        padding: 9rem 0; 
+        position: relative; 
+        overflow: hidden; 
+        border-bottom: 1px solid var(--border, rgba(0,0,0,0.08));
+      }
+      section:last-of-type { border-bottom: none; }
+      
+      h1, h2, h3 { font-family: var(--font-heading); line-height: 1.1; letter-spacing: -0.03em; }
+      h1 { font-size: clamp(3.5rem, 10vw, 6.5rem); font-weight: 900; }
+      h2 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; text-align: center; margin-bottom: 5rem; }
+      h3 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; }
+
+      p { color: var(--text-secondary); font-size: 1.125rem; }
+
+      .btn { 
+        display: inline-flex; align-items: center; justify-content: center; 
+        padding: 1.25rem 3.5rem; background: var(--primary); color: white; 
+        text-decoration: none; border-radius: var(--radius); 
+        font-weight: 800; transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+        border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem;
+        box-shadow: 0 10px 30px -10px var(--primary);
+      }
+      .btn:hover { transform: translateY(-4px) scale(1.02); filter: brightness(1.1); box-shadow: 0 20px 40px -10px var(--primary); }
+
+      /* Components */
+      .card { 
+        padding: 3.5rem; border-radius: var(--radius); 
+        background: var(--surface); border: 1px solid var(--border, rgba(0,0,0,0.05)); 
+        transition: 0.4s; box-shadow: 0 10px 30px rgba(0,0,0,0.02); 
+      }
+      .card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(0,0,0,0.08); border-color: var(--primary); }
+
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem; }
+      .flex { display: flex; align-items: center; gap: 7rem; }
+      .flex-reverse { flex-direction: row-reverse; }
+
+      /* Specialized Lists */
+      .logo-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 5rem; opacity: 0.5; filter: grayscale(1); padding: 2rem 0; }
+      .logo-item { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.05em; }
+
+      .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 5rem; counter-reset: step; }
+      .step-item { position: relative; }
+      .step-item::before { 
+        counter-increment: step; content: counter(step); 
+        display: block; font-size: 5rem; font-weight: 900; color: var(--primary); 
+        opacity: 0.1; margin-bottom: -2.5rem; line-height: 1; 
+      }
+
+      .testimonial-card { font-style: italic; position: relative; }
+      .testimonial-card::after { content: '”'; position: absolute; top: 1rem; right: 2rem; font-size: 8rem; opacity: 0.05; line-height: 1; }
+
+      /* FAQ Accordion */
+      .faq-item { margin-bottom: 1.5rem; cursor: pointer; border: 1px solid var(--border, rgba(0,0,0,0.05)); }
+      .faq-header { display: flex; justify-content: space-between; align-items: center; padding: 2rem; font-weight: 700; font-size: 1.25rem; transition: 0.3s; }
+      .faq-item.active .faq-header { color: var(--primary); border-bottom: 1px solid var(--border, rgba(0,0,0,0.05)); }
+      .faq-answer { display: none; padding: 2rem; opacity: 0.8; }
+      .faq-item.active .faq-answer { display: block; animation: slideDown 0.3s ease-out; }
+      @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+      /* Sticky Navbar */
+      nav { 
+        position: sticky; top: 0; z-index: 1000; 
+        background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); 
+        border-bottom: 1px solid var(--border, rgba(0,0,0,0.05)); padding: 1.5rem 0; 
+      }
+      .nav-container { display: flex; justify-content: space-between; align-items: center; }
+      .brand { font-weight: 900; font-size: 1.75rem; color: var(--primary); text-decoration: none; white-space: nowrap; letter-spacing: -0.04em; }
+      .nav-links { display: flex; gap: 3.5rem; align-items: center; }
+      .nav-link { 
+        text-decoration: none; color: var(--text-primary); 
+        font-weight: 700; font-size: 0.9rem; text-transform: uppercase; 
+        letter-spacing: 0.08em; opacity: 0.6; transition: 0.3s; 
+      }
+      .nav-link:hover { opacity: 1; color: var(--primary); }
+
+      @media (max-width: 1024px) { 
+        .flex, .flex-reverse { flex-direction: column !important; text-align: center; gap: 4rem; }
+        section { padding: 6rem 0; }
+        .nav-links { display: none; }
+      }
+    </style>
+</head>
+<body>
+  <nav>
+    <div class="container nav-container">
+      <a href="#" class="brand">AI CRM</a>
+      <div class="nav-links">
+        <a href="#about-1" class="nav-link">About</a><a href="#services-1" class="nav-link">Services</a><a href="#testimonials-1" class="nav-link">Reviews</a><a href="#faq-1" class="nav-link">FAQ</a>
+        <a href="#contact" class="btn" style="padding: 0.75rem 1.75rem; font-size: 0.8rem; border-radius: 50px;">Connect Now</a>
+      </div>
+    </div>
+  </nav>
+  <main>
+          <section id="hero-1" class="hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://loremflickr.com/1280/720/AI%20CRM%20software,professional/all'); background-size: cover; background-position: center; min-height: 90vh; display: flex; align-items: center; color: white;">
+            <div class="container" style="text-align: center;">
+              <h1 style="color: white; margin-bottom: 3rem;">Unlock Peak Performance for Your SME with AI CRM</h1>
+              <p style="font-size: 1.5rem; max-width: 900px; margin: 0 auto 5rem; opacity: 0.9; color: white;">Streamline operations, enhance customer relationships, and drive growth with intelligent automation designed for small and medium enterprises.</p>
+              <a href="#content" class="btn">Start Your Free Trial</a>
+            </div>
+          </section>
+        
+        <section id="about-1" class="about clean-split-right">
+          <div class="container">
+            <h2 style="">Transform Your Business with Smart, Intuitive CRM</h2>
+            
+            
+            <div class="flex flex-reverse">
+              <div style="flex: 1.3;">
+                
+                <div style="font-size: 1.25rem; margin-bottom: 3rem;"><p style="margin-bottom: 1.5rem;">Our AI CRM is engineered specifically for the dynamic needs of small and medium enterprises. It moves beyond traditional CRM, integrating artificial intelligence to predict customer needs, automate routine tasks, and provide actionable insights. This means your team can focus on building stronger relationships and making strategic decisions, rather than getting bogged down in manual processes.</p><p style="margin-bottom: 1.5rem;">Experience a new level of efficiency where every customer interaction is optimized, and every sales opportunity is identified. Our platform empowers your business with intelligent tools that learn and adapt, ensuring that your customer service is proactive, your sales cycles are shortened, and your marketing efforts are precisely targeted. It's about working smarter, not harder.</p><p style="margin-bottom: 1.5rem;">With AI CRM, you're not just adopting new software; you're embracing a strategic partner that evolves with your business. Gain a competitive edge by leveraging cutting-edge AI to understand your market better, anticipate trends, and deliver personalized experiences that convert. It’s the future of business management, made accessible and affordable for SMEs.</p></div>
+                
+                <a href="#" class="btn" style="margin-top: 4rem;">Learn More About AI CRM</a>
+              </div>
+              
+                <div style="flex: 1;">
+                  <img src="https://loremflickr.com/1280/720/AI%20CRM%20dashboard,professional/all" alt="about" style="width: 100%; border-radius: var(--radius); box-shadow: 0 40px 80px rgba(0,0,0,0.12); transform: perspective(1000px) rotateY(5deg); transition: 0.5s;">
+                </div>
+              
+            </div>
+          </div>
+        </section>
+      
+        <section id="services-1" class="services minimal-grid-cards">
+          <div class="container">
+            <h2 style="">Core Features Designed for SME Success</h2>
+            
+            
+            <div class="flex ">
+              <div style="flex: 1.3;">
+                <p style="margin-bottom: 1.5rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.9rem;">Discover how AI CRM helps you manage customers, boost sales, and enhance marketing with intelligent automation.</p>
+                
+                
+          <div class="steps-grid">
+            
+                <div class="card step-item" 
+                     >
+                  <h3>Predictive Sales Analytics</h3>
+                  <div class="" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Leverage AI to forecast sales trends, identify high-potential leads, and optimize your sales pipeline for maximum conversion. Focus your efforts where they matter most.</p></div>
+                </div>
+              
+                <div class="card step-item" 
+                     >
+                  <h3>Automated Customer Support</h3>
+                  <div class="" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Reduce response times and improve customer satisfaction with AI-powered chatbots and automated ticket routing. Provide 24/7 support without increasing headcount.</p></div>
+                </div>
+              
+                <div class="card step-item" 
+                     >
+                  <h3>Personalized Marketing Campaigns</h3>
+                  <div class="" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Segment your audience with precision and deliver hyper-personalized content using AI insights. Increase engagement and ROI with targeted campaigns.</p></div>
+                </div>
+              
+                <div class="card step-item" 
+                     >
+                  <h3>Smart Task Management</h3>
+                  <div class="" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Intelligently assign tasks, set reminders, and track progress across your team. Ensure no lead falls through the cracks and productivity remains high.</p></div>
+                </div>
+              
+                <div class="card step-item" 
+                     >
+                  <h3>Integrated Communication Hub</h3>
+                  <div class="" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Consolidate all customer communications – email, chat, social media – into one unified platform. Gain a 360-degree view of every customer interaction.</p></div>
+                </div>
+              
+                <div class="card step-item" 
+                     >
+                  <h3>Customizable Dashboards & Reports</h3>
+                  <div class="" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Access intuitive, customizable dashboards that provide real-time insights into your sales, marketing, and customer service performance. Make data-driven decisions easily.</p></div>
+                </div>
+              
+          </div>
+        
+                
+              </div>
+              
+            </div>
+          </div>
+        </section>
+      
+        <section id="testimonials-1" class="testimonials simple-grid-quote">
+          <div class="container">
+            <h2 style="">What Our Valued SME Clients Say</h2>
+            
+            
+            <div class="flex ">
+              <div style="flex: 1.3;">
+                
+                
+                
+                
+              </div>
+              
+            </div>
+          </div>
+        </section>
+      
+        <section id="cta-1" class="cta full-width-banner-minimal">
+          <div class="container">
+            <h2 style="text-align: center;">Ready to Empower Your SME with AI?</h2>
+            <p style="text-align: center; max-width: 800px; margin: -4rem auto 6rem; opacity: 0.7;">Experience the future of business management. Start your journey towards greater efficiency and profitability today.</p>
+            
+            <div class="flex ">
+              <div style="flex: 1.3;">
+                
+                
+                
+                <a href="#" class="btn" style="margin-top: 4rem;">Get Started with AI CRM</a>
+              </div>
+              
+                <div style="flex: 1;">
+                  <img src="https://loremflickr.com/1280/720/AI%20SaaS,professional/all" alt="cta" style="width: 100%; border-radius: var(--radius); box-shadow: 0 40px 80px rgba(0,0,0,0.12); transform: perspective(1000px) rotateY(-5deg); transition: 0.5s;">
+                </div>
+              
+            </div>
+          </div>
+        </section>
+      
+        <section id="faq-1" class="faq accordion-minimal">
+          <div class="container">
+            <h2 style="">Frequently Asked Questions</h2>
+            
+            
+            <div class="flex ">
+              <div style="flex: 1.3;">
+                
+                
+                
+          <div class="faq-container">
+            
+                <div class="faq-item " 
+                     onclick="this.classList.toggle('active')">
+                  <div class="faq-header"><span>What makes AI CRM different from traditional CRMs?</span><span>↓</span></div>
+                  <div class="faq-answer" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">AI CRM integrates artificial intelligence to provide predictive analytics, automated workflows, and personalized insights that go beyond standard data management. It helps SMEs anticipate customer needs, optimize processes, and make data-driven decisions proactively, rather than reactively.</p></div>
+                </div>
+              
+                <div class="faq-item " 
+                     onclick="this.classList.toggle('active')">
+                  <div class="faq-header"><span>Is AI CRM suitable for my small business?</span><span>↓</span></div>
+                  <div class="faq-answer" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Absolutely. AI CRM is specifically designed with the needs of small and medium enterprises in mind. Its scalable features, intuitive interface, and cost-effective solutions ensure that businesses of all sizes can harness the power of AI to grow.</p></div>
+                </div>
+              
+                <div class="faq-item " 
+                     onclick="this.classList.toggle('active')">
+                  <div class="faq-header"><span>How long does it take to implement AI CRM?</span><span>↓</span></div>
+                  <div class="faq-answer" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Implementation time varies depending on your specific needs and data migration requirements. However, our platform is designed for quick setup, with an average initial deployment taking just a few days to a couple of weeks, supported by our dedicated onboarding team.</p></div>
+                </div>
+              
+                <div class="faq-item " 
+                     onclick="this.classList.toggle('active')">
+                  <div class="faq-header"><span>Do I need technical expertise to use AI CRM?</span><span>↓</span></div>
+                  <div class="faq-answer" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">No, you don't. AI CRM is built with a user-friendly interface, ensuring that team members with varying technical skills can navigate and utilize its features effectively. We also offer comprehensive training and support to get you up to speed quickly.</p></div>
+                </div>
+              
+                <div class="faq-item " 
+                     onclick="this.classList.toggle('active')">
+                  <div class="faq-header"><span>What kind of support is available?</span><span>↓</span></div>
+                  <div class="faq-answer" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">We offer a range of support options including 24/7 online knowledge base, email support, and dedicated customer success managers for premium plans. Our goal is to ensure you get the most out of your AI CRM experience.</p></div>
+                </div>
+              
+                <div class="faq-item " 
+                     onclick="this.classList.toggle('active')">
+                  <div class="faq-header"><span>Can AI CRM integrate with my existing tools?</span><span>↓</span></div>
+                  <div class="faq-answer" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Yes, AI CRM is designed to integrate seamlessly with a wide array of popular business tools and platforms, including email clients, marketing automation software, accounting systems, and more, through APIs and direct integrations.</p></div>
+                </div>
+              
+          </div>
+        
+                
+              </div>
+              
+            </div>
+          </div>
+        </section>
+      
+        <section id="footer-1" class="footer minimal-links">
+          <div class="container">
+            
+            
+            
+            <div class="flex ">
+              <div style="flex: 1.3;">
+                
+                
+                
+          <div class="grid">
+            
+                <div class="card " 
+                     >
+                  <h3></h3>
+                  <div class="" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Privacy Policy</p></div>
+                </div>
+              
+                <div class="card " 
+                     >
+                  <h3></h3>
+                  <div class="" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Terms of Service</p></div>
+                </div>
+              
+                <div class="card " 
+                     >
+                  <h3></h3>
+                  <div class="" style="margin-top: 1rem;"><p style="margin-bottom: 1.5rem;">Contact Us</p></div>
+                </div>
+              
+          </div>
+        
+                
+              </div>
+              
+            </div>
+          </div>
+        </section>
+      </main>
+</body>
+</html>
